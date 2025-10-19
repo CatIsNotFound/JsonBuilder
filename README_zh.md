@@ -1,5 +1,8 @@
 # JsonBuilder
 
+![C++20](https://img.shields.io/badge/C%2B%2B-20-blue.svg)
+![License](https://img.shields.io/badge/License-MIT-green.svg)
+
 一个轻量级高效的C++ JSON解析和操作库。
 
 ## 特性
