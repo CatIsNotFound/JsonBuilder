@@ -16,35 +16,43 @@
 #include <memory>
 
 namespace Json {
-    class KeyIsNotFoundException : public std::exception {
-    public:
-        explicit KeyIsNotFoundException(std::string msg) : _msg(std::move(msg)) {}
-        [[nodiscard]] const char * what() const noexcept override {
-            return _msg.c_str();
-        }
-    private:
-        std::string _msg;
-    };
+    namespace JException {
+        class KeyIsNotFoundException : public std::exception {
+        public:
+            explicit KeyIsNotFoundException(std::string msg) : _msg(std::move(msg)) {}
 
-    class GetBadValueException : public std::exception {
-    public:
-        explicit GetBadValueException(std::string msg) : _msg(std::move(msg)) {}
-        [[nodiscard]] const char * what() const noexcept override {
-            return _msg.c_str();
-        }
-    private:
-        std::string _msg;
-    };
+            [[nodiscard]] const char *what() const noexcept override {
+                return _msg.c_str();
+            }
 
-    class ParseJsonError : public std::exception {
-    public:
-        explicit ParseJsonError(std::string msg) : _msg(std::move(msg)) {}
-        [[nodiscard]] const char * what() const noexcept override {
-            return _msg.c_str();
-        }
-    private:
-        std::string _msg;
-    };
+        private:
+            std::string _msg;
+        };
+
+        class GetBadValueException : public std::exception {
+        public:
+            explicit GetBadValueException(std::string msg) : _msg(std::move(msg)) {}
+
+            [[nodiscard]] const char *what() const noexcept override {
+                return _msg.c_str();
+            }
+
+        private:
+            std::string _msg;
+        };
+
+        class ParseJsonError : public std::exception {
+        public:
+            explicit ParseJsonError(std::string msg) : _msg(std::move(msg)) {}
+
+            [[nodiscard]] const char *what() const noexcept override {
+                return _msg.c_str();
+            }
+
+        private:
+            std::string _msg;
+        };
+    }
 
     enum JDataType {
         Null,
@@ -150,7 +158,10 @@ namespace Json {
         void clear();
         void sort(const std::function<bool(JValue&, JValue&)>& sort_function);
 
-        void operator<<(const JValue& value);
+        JArray& operator<<(const JValue& value);
+        JArray& operator<<(const JArray& array);
+        JArray& operator<<(const JObject& object);
+        JValue& operator[](size_t index);
     private:
         std::vector<JValue> _dict;
     };

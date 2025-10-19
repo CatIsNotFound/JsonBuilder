@@ -1,5 +1,7 @@
 # JsonBuilder
 
+[简体中文](README_zh.md)
+
 ![C++20](https://img.shields.io/badge/C%2B%2B-20-blue.svg) ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
 A lightweight and efficient C++ JSON parsing and manipulation library.
@@ -15,70 +17,13 @@ A lightweight and efficient C++ JSON parsing and manipulation library.
 
 ## Installation
 
-**⚠️ NOTE**: This library is designed for **C++20** and above.
+**⚠️ NOTE**: This library is only applicable to the **C++20** standard and above.
 
-
-1. Copy the `src` directory into your project.
-
-2. Include the source files in your project:
-    ```cpp
-    #include "src/Json.h"
-    ```
-
-## Basic Usage
-
-### Parsing JSON from File
-
-```cpp
-Json::JParser parser;
-parser.parseFromJsonFile("simple.json");
-```
-
-### Accessing JSON Data
-
-```cpp
-// Access array elements
-const auto& array = parser.array();
-std::string name = array.toString(0);
-
-// Access object properties
-const auto& object = parser.object();
-bool flag = object.toBool("active");
-int value = object.toInt("id");
-std::string text = object.toString("description");
-```
-
-### Creating JSON Data
-
-```cpp
-// Create a JSON object
-Json::JObject person;
-person.set("name", "John Doe");
-person.set("age", 30);
-person.set("isEmployed", true);
-
-// Create a JSON array
-Json::JArray hobbies;
-hobbies.pushBack("reading");
-hobbies.pushBack("gaming");
-hobbies.pushBack("coding");
-
-// Add array to object
-person.set("hobbies", hobbies);
-
-// Create parser with object
-Json::JParser parser(person);
-```
-
-### Serializing JSON
-
-```cpp
-// Dump to string
-std::string jsonString = parser.dump(2);  // 2 spaces for indentation
-
-// Save to file
-parser.dumpToJsonFile("output.json", 2);
-```
+1. [Click to download the latest release.](https://github.com/CatIsNotFound/JsonBuilder/releases/latest)
+2. Clone this repo:
+   ```bash
+   git clone https://github.com/CatIsNotFound/JsonBuilder.git
+   ```
 
 ## Data Types
 
@@ -109,6 +54,12 @@ try {
     std::cerr << "Error: " << e.what() << std::endl;
 }
 ```
+
+## Learn more
+
+- [Usage](docs/usage.md)
+- [Example](docs/example.md)
+- [How to build with CMake?](docs/cmake-build.md)
 
 ## Contributing
 

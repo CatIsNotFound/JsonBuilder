@@ -1,4 +1,3 @@
-
 #include "Json.h"
 
 Json::JObject::JObject() = default;
@@ -65,7 +64,7 @@ Json::JValue & Json::JObject::get(const std::string &key) {
     if (ptr != _dict.end()) {
         return ptr->second;
     }
-    throw KeyIsNotFoundException("The key '" + key + "' is not found in object!");
+    throw JException::KeyIsNotFoundException("The key '" + key + "' is not found in object!");
 }
 
 bool Json::JObject::valid(const std::string &key) {
@@ -84,86 +83,86 @@ void Json::JObject::clear() {
 
 bool Json::JObject::toBool(const std::string &key) const {
     if (!_dict.contains(key)) {
-        throw KeyIsNotFoundException("The key '" + key + "' is not found in object!");
+        throw JException::KeyIsNotFoundException("The key '" + key + "' is not found in object!");
     }
     if (std::holds_alternative<bool>(_dict.at(key)))
         return std::get<bool>(_dict.at(key));
     else
-        throw GetBadValueException("Can't get value from key '" + key + "'!");
+        throw JException::GetBadValueException("Can't get value from key '" + key + "'!");
 }
 
 int32_t Json::JObject::toInt(const std::string &key) const {
     if (!_dict.contains(key)) {
-        throw KeyIsNotFoundException("The key '" + key + "' is not found in object!");
+        throw JException::KeyIsNotFoundException("The key '" + key + "' is not found in object!");
     }
     if (std::holds_alternative<int32_t>(_dict.at(key)))
         return std::get<int32_t>(_dict.at(key));
     else if (std::holds_alternative<int64_t>(_dict.at(key)))
         return static_cast<int32_t>(std::get<int64_t>(_dict.at(key)));
     else
-        throw GetBadValueException("Can't get value from key '" + key + "'!");
+        throw JException::GetBadValueException("Can't get value from key '" + key + "'!");
 }
 
 int64_t Json::JObject::toBigInt(const std::string &key) const {
     if (!_dict.contains(key)) {
-        throw KeyIsNotFoundException("The key '" + key + "' is not found in object!");
+        throw JException::KeyIsNotFoundException("The key '" + key + "' is not found in object!");
     }
     if (std::holds_alternative<int64_t>(_dict.at(key)))
         return std::get<int64_t>(_dict.at(key));
     else
-        throw GetBadValueException("Can't get value from key '" + key + "'!");
+        throw JException::GetBadValueException("Can't get value from key '" + key + "'!");
 }
 
 float Json::JObject::toFloat(const std::string &key) const {
     if (!_dict.contains(key)) {
-        throw KeyIsNotFoundException("The key '" + key + "' is not found in object!");
+        throw JException::KeyIsNotFoundException("The key '" + key + "' is not found in object!");
     }
     if (std::holds_alternative<float>(_dict.at(key)))
         return std::get<float>(_dict.at(key));
     else if (std::holds_alternative<double>(_dict.at(key)))
         return static_cast<float>(std::get<double>(_dict.at(key)));
     else
-        throw GetBadValueException("Can't get value from key '" + key + "'!");
+        throw JException::GetBadValueException("Can't get value from key '" + key + "'!");
 }
 
 double Json::JObject::toDouble(const std::string &key) const {
     if (!_dict.contains(key)) {
-        throw KeyIsNotFoundException("The key '" + key + "' is not found in object!");
+        throw JException::KeyIsNotFoundException("The key '" + key + "' is not found in object!");
     }
     if (std::holds_alternative<double>(_dict.at(key)))
         return std::get<double>(_dict.at(key));
     else
-        throw GetBadValueException("Can't get value from key '" + key + "'!");
+        throw JException::GetBadValueException("Can't get value from key '" + key + "'!");
 }
 
 const std::string & Json::JObject::toString(const std::string &key) const {
     if (!_dict.contains(key)) {
-        throw KeyIsNotFoundException("The key '" + key + "' is not found in object!");
+        throw JException::KeyIsNotFoundException("The key '" + key + "' is not found in object!");
     }
     if (std::holds_alternative<std::string>(_dict.at(key)))
         return std::get<std::string>(_dict.at(key));
     else
-        throw GetBadValueException("Can't get value from key '" + key + "'!");
+        throw JException::GetBadValueException("Can't get value from key '" + key + "'!");
 }
 
 const Json::JArray* Json::JObject::toArray(const std::string &key) const {
     if (!_dict.contains(key)) {
-        throw KeyIsNotFoundException("The key '" + key + "' is not found in object!");
+        throw JException::KeyIsNotFoundException("The key '" + key + "' is not found in object!");
     }
     if (std::holds_alternative<std::shared_ptr<JArray>>(_dict.at(key)))
         return std::get<std::shared_ptr<JArray>>(_dict.at(key)).get();
     else
-        throw GetBadValueException("Can't get value from key '" + key + "'!");
+        throw JException::GetBadValueException("Can't get value from key '" + key + "'!");
 }
 
 const Json::JObject* Json::JObject::toObject(const std::string &key) const {
     if (!_dict.contains(key)) {
-        throw KeyIsNotFoundException("The key '" + key + "' is not found in object!");
+        throw JException::KeyIsNotFoundException("The key '" + key + "' is not found in object!");
     }
     if (std::holds_alternative<std::shared_ptr<JObject>>(_dict.at(key)))
         return std::get<std::shared_ptr<JObject>>(_dict.at(key)).get();
     else
-        throw GetBadValueException("Can't get value from key '" + key + "'!");
+        throw JException::GetBadValueException("Can't get value from key '" + key + "'!");
 }
 
 Json::JValue &Json::JObject::operator[](const std::string &key) {
@@ -187,7 +186,7 @@ std::vector<std::string> Json::JObject::keys() const {
 
 bool Json::JObject::isNull(const std::string &key) const {
     if (!_dict.contains(key)) {
-        throw KeyIsNotFoundException("The key '" + key + "' is not found in object!");
+        throw JException::KeyIsNotFoundException("The key '" + key + "' is not found in object!");
     }
     return _dict.at(key).index() == JDataType::Null;
 }
@@ -227,7 +226,7 @@ bool Json::JArray::toBool(size_t index) const {
     if (std::holds_alternative<bool>(_dict.at(index)))
         return std::get<bool>(_dict.at(index));
     else
-        throw GetBadValueException("Can't get value from index '" + std::to_string(index) + "'!");
+        throw JException::GetBadValueException("Can't get value from index '" + std::to_string(index) + "'!");
 }
 
 int32_t Json::JArray::toInt(size_t index) const {
@@ -236,7 +235,7 @@ int32_t Json::JArray::toInt(size_t index) const {
     else if (std::holds_alternative<int64_t>(_dict.at(index)))
         return static_cast<int32_t>(std::get<int64_t>(_dict.at(index)));
     else
-        throw GetBadValueException("Can't get value from index '" + std::to_string(index) + "'!");
+        throw JException::GetBadValueException("Can't get value from index '" + std::to_string(index) + "'!");
 }
 
 int64_t Json::JArray::toBigInt(size_t index) const {
@@ -245,7 +244,7 @@ int64_t Json::JArray::toBigInt(size_t index) const {
     else if (std::holds_alternative<int64_t>(_dict.at(index)))
         return std::get<int64_t>(_dict.at(index));
     else
-        throw GetBadValueException("Can't get value from index '" + std::to_string(index) + "'!");
+        throw JException::GetBadValueException("Can't get value from index '" + std::to_string(index) + "'!");
 }
 
 float Json::JArray::toFloat(size_t index) const {
@@ -254,7 +253,7 @@ float Json::JArray::toFloat(size_t index) const {
     else if (std::holds_alternative<double>(_dict.at(index)))
         return static_cast<float>(std::get<double>(_dict.at(index)));
     else
-        throw GetBadValueException("Can't get value from index '" + std::to_string(index) + "'!");
+        throw JException::GetBadValueException("Can't get value from index '" + std::to_string(index) + "'!");
 }
 
 double Json::JArray::toDouble(size_t index) const {
@@ -263,28 +262,28 @@ double Json::JArray::toDouble(size_t index) const {
     else if (std::holds_alternative<double>(_dict.at(index)))
         return std::get<double>(_dict.at(index));
     else
-        throw GetBadValueException("Can't get value from index '" + std::to_string(index) + "'!");
+        throw JException::GetBadValueException("Can't get value from index '" + std::to_string(index) + "'!");
 }
 
 const std::string &Json::JArray::toString(size_t index) const {
     if (std::holds_alternative<std::string>(_dict.at(index)))
         return std::get<std::string>(_dict.at(index));
     else
-        throw GetBadValueException("Can't get value from index '" + std::to_string(index) + "'!");
+        throw JException::GetBadValueException("Can't get value from index '" + std::to_string(index) + "'!");
 }
 
 const Json::JArray *Json::JArray::toArray(size_t index) const {
     if (std::holds_alternative<std::shared_ptr<JArray>>(_dict.at(index)))
         return std::get<std::shared_ptr<JArray>>(_dict.at(index)).get();
     else
-        throw GetBadValueException("Can't get value from index '" + std::to_string(index) + "'!");
+        throw JException::GetBadValueException("Can't get value from index '" + std::to_string(index) + "'!");
 }
 
 const Json::JObject *Json::JArray::toObject(size_t index) const {
     if (std::holds_alternative<std::shared_ptr<JObject>>(_dict.at(index)))
         return std::get<std::shared_ptr<JObject>>(_dict.at(index)).get();
     else
-        throw GetBadValueException("Can't get value from index '" + std::to_string(index) + "'!");
+        throw JException::GetBadValueException("Can't get value from index '" + std::to_string(index) + "'!");
 }
 
 void Json::JArray::pushBack(const Json::JValue &value) {
@@ -316,11 +315,11 @@ void Json::JArray::append(const Json::JValue &value) {
 }
 
 void Json::JArray::append(const Json::JArray &array) {
-    _dict.push_back(std::make_shared<JArray>(array));
+    _dict.emplace_back(std::make_shared<JArray>(array));
 }
 
 void Json::JArray::append(const Json::JObject &object) {
-    _dict.push_back(std::make_shared<JObject>(object));
+    _dict.emplace_back(std::make_shared<JObject>(object));
 }
 
 void Json::JArray::insert(size_t index, const Json::JValue &value) {
@@ -357,8 +356,23 @@ void Json::JArray::sort(const std::function<bool(JValue&, JValue&)> &sort_functi
     }
 }
 
-void Json::JArray::operator<<(const Json::JValue &value) {
+Json::JArray& Json::JArray::operator<<(const Json::JValue &value) {
     _dict.push_back(value);
+    return *this;
+}
+
+Json::JArray& Json::JArray::operator<<(const Json::JArray &array) {
+    _dict.emplace_back(std::make_shared<JArray>(array));
+    return *this;
+}
+
+Json::JArray& Json::JArray::operator<<(const Json::JObject &object) {
+    _dict.emplace_back(std::make_shared<JObject>(object));
+    return *this;
+}
+
+Json::JValue& Json::JArray::operator[](size_t index) {
+    return _dict.at(index);
 }
 
 Json::JParser::JParser(Json::JObject root_object)
@@ -368,7 +382,7 @@ Json::JParser::JParser(Json::JArray root_array)
     : _root_array(std::move(root_array)) {}
 
 Json::JParser::JParser(const std::string &file_name, uint32_t max_cols_inline) {
-    std::ifstream file("simple.json", std::ios::in);
+    std::ifstream file(file_name, std::ios::in);
     std::string json;
     if (!file.is_open()) return;
     char *buf = (char*) calloc(max_cols_inline, sizeof(char));
@@ -484,8 +498,8 @@ std::string Json::JParser::parseArray(const Json::JArray *array, const std::stri
                                       uint8_t indentation_level) {
     std::string array_text;
     array_text += "[";
-    auto _idx = 0;
-    auto _size = array->size();
+    size_t _idx = 0;
+    size_t _size = array->size();
     if (!_size) {
         array_text += "]";
         return array_text;
@@ -597,7 +611,7 @@ std::vector<Json::JParser::Token> Json::JParser::extract(const std::string &json
         } else if (c == 't') {
             auto key = json.substr(i, 4);
             if (key != "true") {
-                throw ParseJsonError("Unexpected keyword \"" +
+                throw JException::ParseJsonError("Unexpected keyword \"" +
                                      key + "\" at line " + std::to_string(line) +
                                      " col " + std::to_string(col) + "!");
             }
@@ -606,7 +620,7 @@ std::vector<Json::JParser::Token> Json::JParser::extract(const std::string &json
         } else if (c == 'f') {
             auto key = json.substr(i, 5);
             if (key != "false") {
-                throw ParseJsonError("Unexpected keyword \"" +
+                throw JException::ParseJsonError("Unexpected keyword \"" +
                                      key + "\" at line " + std::to_string(line) +
                                      " col " + std::to_string(col) + "!");
             }
@@ -615,37 +629,37 @@ std::vector<Json::JParser::Token> Json::JParser::extract(const std::string &json
         } else if (c == 'n') {
             auto key = json.substr(i, 4);
             if (key != "null") {
-                throw ParseJsonError("Unexpected keyword \"" +
+                throw JException::ParseJsonError("Unexpected keyword \"" +
                                      key + "\" at line " + std::to_string(line) +
                                      " col " + std::to_string(col) + "!");
             }
             tokens.emplace_back("null", "", line, col);
             i += 4; col += 4;
         } else {
-            throw ParseJsonError("Unexpected character '" +
+            throw JException::ParseJsonError("Unexpected character '" +
                                  std::string(1, c) + "' at line " + std::to_string(line) +
                                  " col " + std::to_string(col) + "!");
         }
         if (check_begin && !tokens.empty()) {
             bool b = (tokens.front().type == "{" || tokens.front().type == "[");
             if (!b) {
-                throw ParseJsonError("The JSON text does not start with '{' or '['!");
+                throw JException::ParseJsonError("The JSON text does not start with '{' or '['!");
             }
             check_begin = false;
         }
     }
     if (enclosed_2) {
-        throw ParseJsonError("Redundant enclosing character '" + temp_token_2.type + "' at line " +
+        throw JException::ParseJsonError("Redundant enclosing character '" + temp_token_2.type + "' at line " +
                              std::to_string(temp_token_2.line) + " col " +
                              std::to_string(temp_token_2.col) + "!");
     }
     if (enclosed_1) {
-        throw ParseJsonError("Redundant enclosing character '" + temp_token_1.type + "' at line " +
+        throw JException::ParseJsonError("Redundant enclosing character '" + temp_token_1.type + "' at line " +
                              std::to_string(temp_token_1.line) + " col " +
                              std::to_string(temp_token_1.col) + "!");
     }
     if (end_pos < tokens.size() - 1) {
-        throw ParseJsonError("Redundant enclosing character '" + tokens[end_pos + 1].type + "' at line " +
+        throw JException::ParseJsonError("Redundant enclosing character '" + tokens[end_pos + 1].type + "' at line " +
                              std::to_string(tokens[end_pos + 1].line) + " col " +
                              std::to_string(tokens[end_pos + 1].col) + "!");
     }
@@ -664,11 +678,11 @@ Json::JParser::Token Json::JParser::extractString(const std::string &json, size_
             end_pos = pos - 1;
             return {"string", json.substr(start_pos, end_pos - start_pos), begin_line, begin_col};
         } else if (ch == '\n') {
-            throw ParseJsonError("The character '\\n' is not supported at line " +
+            throw JException::ParseJsonError("The character '\\n' is not supported at line " +
                                     std::to_string(line) + " col " + std::to_string(col) + "!");
         }
     }
-    throw ParseJsonError("The character '\"' is not enclosed at line " + std::to_string(begin_line) +
+    throw JException::ParseJsonError("The character '\"' is not enclosed at line " + std::to_string(begin_line) +
                          " col " + std::to_string(begin_col - 1) + "!");
 }
 
@@ -678,8 +692,8 @@ Json::JParser::Token Json::JParser::extractNumber(const std::string &json, size_
     size_t begin_line = line, begin_col = col;
     auto _size = json.size();
     bool is_minus = false, is_point = false;
-    if (json[pos + 1] == '0' && isdigit(json[pos + 1])) {
-        throw ParseJsonError("The number can not start with the digit '0' at line " + std::to_string(line) +
+    if (json[pos] == '0' && isdigit(json[pos + 1])) {
+        throw JException::ParseJsonError("The number can not start with the digit '0' at line " + std::to_string(line) +
                              " col " + std::to_string(col - 1) + "!");
     }
     while (pos < _size) {
@@ -687,13 +701,13 @@ Json::JParser::Token Json::JParser::extractNumber(const std::string &json, size_
         col++;
         if (ch == '-') {
             if (is_minus) {
-                throw ParseJsonError("The number is not allowed to have repeated '-' characters at line " + std::to_string(line) +
+                throw JException::ParseJsonError("The number is not allowed to have repeated '-' characters at line " + std::to_string(line) +
                                      " col " + std::to_string(col - 1) + "!");
             }
             else is_minus = true;
         } else if (ch == '.') {
             if (is_point) {
-                throw ParseJsonError("The number is not allowed to have repeated '.' characters at line " + std::to_string(line) +
+                throw JException::ParseJsonError("The number is not allowed to have repeated '.' characters at line " + std::to_string(line) +
                                      " col " + std::to_string(col - 1) + "!");
             } else {
                 is_point = true;
@@ -706,7 +720,7 @@ Json::JParser::Token Json::JParser::extractNumber(const std::string &json, size_
     }
     auto cnt = end_pos - start_pos;
     if (cnt <= 0) {
-        throw ParseJsonError("The JSON context does not end with '}'!");
+        throw JException::ParseJsonError("The JSON context does not end with '}'!");
     }
     return {"number", json.substr(start_pos, cnt), begin_line, begin_col};
 }
@@ -725,7 +739,7 @@ Json::JObject Json::JParser::parseObject(const std::vector<Token> &tokens, size_
     Json::JObject result;
     auto line = tokens[pos].line, col = tokens[pos].col;
     if (tokens[pos].type != "{") {
-        throw ParseJsonError("The Object is not start with \'{\' at line " +
+        throw JException::ParseJsonError("The Object is not start with \'{\' at line " +
                              std::to_string(tokens[pos].line) + " col " +
                              std::to_string(tokens[pos].col) + "!");
     }
@@ -734,7 +748,7 @@ Json::JObject Json::JParser::parseObject(const std::vector<Token> &tokens, size_
         std::string key;
         if (tokens[pos].type == "}") {
             if (tokens[pos - 1].type == ",")
-                throw ParseJsonError("The Object is not completed at line " +
+                throw JException::ParseJsonError("The Object is not completed at line " +
                                  std::to_string(tokens[pos - 1].line) + " col " +
                                  std::to_string(tokens[pos - 1].col) + "!");
             else
@@ -742,14 +756,14 @@ Json::JObject Json::JParser::parseObject(const std::vector<Token> &tokens, size_
         }
 
         if (tokens[pos].type != "string") {
-            throw ParseJsonError("Expected '" + tokens[pos].type + "' at line " +
+            throw JException::ParseJsonError("Expected '" + tokens[pos].type + "' at line " +
                                  std::to_string(tokens[pos].line) + " col " +
                                  std::to_string(tokens[pos].col) + "! Next one should be the key name!");
         }
         key = tokens[pos].value;
         pos++;
         if (tokens[pos].type != ":") {
-            throw ParseJsonError("Expected '" + tokens[pos].type + "' at line " +
+            throw JException::ParseJsonError("Expected '" + tokens[pos].type + "' at line " +
                                  std::to_string(tokens[pos].line) + " col " +
                                  std::to_string(tokens[pos].col) + "! Next one should be the ':'!");
         }
@@ -769,7 +783,7 @@ Json::JObject Json::JParser::parseObject(const std::vector<Token> &tokens, size_
             continue;
         }
     }
-    throw ParseJsonError("There is still an uncompleted object from the character '{' at line " +
+    throw JException::ParseJsonError("There is still an uncompleted object from the character '{' at line " +
                          std::to_string(line) + " col " + std::to_string(col) + "!");
 }
 
@@ -796,7 +810,7 @@ Json::JValue Json::JParser::parseValue(const Json::JParser::Token &token) {
     } else if (token.type == "{") {
         return std::monostate{};
     } else {
-        throw ParseJsonError("Can't parse value type '" + token.type + "' at line " +
+        throw JException::ParseJsonError("Can't parse value type '" + token.type + "' at line " +
                              std::to_string(token.line) + " col " +
                              std::to_string(token.col) + "!");
     }
@@ -807,7 +821,7 @@ Json::JArray Json::JParser::parseArray(const std::vector<Token> &tokens, size_t 
     Json::JArray result;
     auto line = tokens[pos].line, col = tokens[pos].col;
     if (tokens[pos].type != "[") {
-        throw ParseJsonError("The Array is not start with \'{\' at line " +
+        throw JException::ParseJsonError("The Array is not start with \'{\' at line " +
                              std::to_string(tokens[pos].line) + " col " +
                              std::to_string(tokens[pos].col) + "!");
     }
@@ -815,7 +829,7 @@ Json::JArray Json::JParser::parseArray(const std::vector<Token> &tokens, size_t 
     while (pos < tokens.size()) {
         std::string key;
         if (tokens[pos].type == "]" && tokens[pos - 1].type == ",") {
-            throw ParseJsonError("The Array is not completed at line " +
+            throw JException::ParseJsonError("The Array is not completed at line " +
                                  std::to_string(tokens[pos - 1].line) + " col " +
                                  std::to_string(tokens[pos - 1].col) + "!");
         }
@@ -835,15 +849,15 @@ Json::JArray Json::JParser::parseArray(const std::vector<Token> &tokens, size_t 
             pos++;
             continue;
         } else if (tokens[pos].type == ":") {
-            throw ParseJsonError("Unexpected character ':' in array at line " +
+            throw JException::ParseJsonError("Unexpected character ':' in array at line " +
                                  std::to_string(tokens[pos].line) + " col " +
                                  std::to_string(tokens[pos].col) + "!");
         } else {
-            throw ParseJsonError("There is still an uncompleted array from the character '[' at line " +
+            throw JException::ParseJsonError("There is still an uncompleted array from the character '[' at line " +
                                  std::to_string(line) + " col " + std::to_string(col) + "!");
         }
     }
-    throw ParseJsonError("There is still an uncompleted array from the character '[' at line " +
+    throw JException::ParseJsonError("There is still an uncompleted array from the character '[' at line " +
                          std::to_string(line) + " col " + std::to_string(col) + "!");
 }
 
