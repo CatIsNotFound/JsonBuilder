@@ -1,7 +1,6 @@
 # JsonBuilder
 
-![C++20](https://img.shields.io/badge/C%2B%2B-20-blue.svg)
-![License](https://img.shields.io/badge/License-MIT-green.svg)
+![C++20](https://img.shields.io/badge/C%2B%2B-20-blue.svg) ![License](https://img.shields.io/badge/License-MIT-green.svg)
 
 A lightweight and efficient C++ JSON parsing and manipulation library.
 
@@ -117,4 +116,4 @@ Contributions are welcome! Feel free to submit issues and pull requests.
 
 ## License
 
-This project is licensed under the MIT License.
+This project is licensed under the [MIT License](LICENSE).
