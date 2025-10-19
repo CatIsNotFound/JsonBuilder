@@ -222,6 +222,10 @@ const Json::JValue &Json::JArray::get(size_t index) const {
     return _dict.at(index);
 }
 
+bool Json::JArray::isNull(size_t index) const {
+    return _dict.at(index).index() == JDataType::Null;
+}
+
 bool Json::JArray::toBool(size_t index) const {
     if (std::holds_alternative<bool>(_dict.at(index)))
         return std::get<bool>(_dict.at(index));

@@ -130,6 +130,7 @@ namespace Json {
         [[nodiscard]] size_t size() const;
         [[nodiscard]] size_t length() const;
         [[nodiscard]] const JValue& get(size_t index) const;
+        [[nodiscard]] bool isNull(size_t index) const;
 
         bool toBool(size_t index) const;
         int32_t toInt(size_t index) const;
