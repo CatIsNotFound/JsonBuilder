@@ -1,34 +1,34 @@
-# JsonBuilder Usage Guide
+# Using JsonBuilder
 
 JsonBuilder is a C++ library for building JSON data. It provides a simple and easy-to-use API for creating, parsing, and manipulating JSON data.
 
 ## Installation
 
-### Direct Import [Simplest]
+### Direct Import [Easiest]
 
-JsonBuilder can be directly imported into the project without installation.
+JsonBuilder can be directly imported into your project without installation.
 
-Clone the JsonBuilder repository using the following Git directory:
+Clone the JsonBuilder repository using the following Git command:
 ```bash
 git clone https://github.com/CatIsNotFound/JsonBuilder.git  
 cd JsonBuilder
 ```
 
-Copy the `Json.h` and `Json.cpp` files from the `src` directory in the project root to your project directory.
+Copy the `Json.h` and `Json.cpp` files from the `src` directory of the project root into your project directory.
 
-### Installing Release Binary Version
+### Install Release Binary Version
 
-JsonBuilder can be downloaded from the latest release version on [repository](https://github.com/CatIsNotFound/JsonBuilder/releases/latest) on GitHub.
+JsonBuilder can be downloaded from the [latest release](https://github.com/CatIsNotFound/JsonBuilder/releases/latest) on GitHub.
 
 ### Manual Compilation
 
-Clone the JsonBuilder repository using the following Git directory:
+Clone the JsonBuilder repository using the following Git command:
 ```bash
 git clone https://github.com/CatIsNotFound/JsonBuilder.git  
 cd JsonBuilder
 ```
 
-You can configure the project and compile it using CMake. For specific methods, please refer to [Building JsonBuilder with CMake](cmake.md).
+You can configure and compile the project using CMake. For detailed instructions, please refer to [Configuring JsonBuilder with CMake](cmake.md).
 
 ## Importing the Library
 
@@ -38,13 +38,13 @@ In your C++ project, include the `Json.h` file to use the JsonBuilder library.
 #include "path/to/JsonBuilder/Json.h"
 ```
 
-## Brief Examples
+## Quick Examples
 
-Here are two examples showing how to use the JsonBuilder library to create and manipulate JSON data.
+Here are two examples demonstrating how to use the JsonBuilder library to create and manipulate JSON data.
 
 ```cpp
-#include <JsonBuilder/Json.h>  // Include JsonBuilder library header file
-#include "/path/to/Json.h"     // Use JsonBuilder library through Json.h header file
+#include <JsonBuilder/Json.h>  // Include JsonBuilder library header
+#include "/path/to/Json.h"     // Use JsonBuilder library through Json.h header
 
 using namespace JsonBuilder;
 
@@ -63,7 +63,7 @@ int main() {
     JParser parser;
     parser.setRootObject(object);
 
-    // Print JSON string representation of the parser
+    // Print the JSON string representation of the parser
     std::cout << parser.dump(4) << std::endl;
 
     return 0;
@@ -85,4 +85,4 @@ After executing the above example code, the following JSON string will be displa
 
 For more examples, you can refer to [JsonBuilder Usage Examples](example.md).
 
-For more JsonBuilder class-related references, please refer to [JsonBuilder Class Reference](class.md).
+For more information about JsonBuilder classes, please refer to [JsonBuilder Class Reference](class.md).

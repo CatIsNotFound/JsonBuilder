@@ -1,3 +1,10 @@
+
+/**
+ * @file Json.cpp
+ * @brief JsonBuilder Source File
+ * @author CatIsNotFound
+ * @brief Repo: https://github.com/CatIsNotFound/JsonBuilder
+ */
 #include "Json.h"
 
 Json::JObject::JObject() = default;
@@ -193,6 +200,8 @@ bool Json::JObject::isNull(const std::string &key) const {
 
 
 Json::JArray::JArray() = default;
+
+Json::JArray::JArray(const std::vector<JValue> &&values) : _dict(values) {}
 
 Json::JArray::constIterator Json::JArray::begin() const {
     return _dict.begin();
@@ -921,6 +930,107 @@ std::string Json::strToEscape(const std::string &str) {
         }
     }
     return result;
+}
+
+
+bool Json::JGet::toBool(const Json::JValue &value) {
+    if (std::holds_alternative<bool>(value)) {
+        return std::get<bool>(value);
+    }
+    throw JException::GetBadValueException("The specified value can not convert to boolean!");
+}
+
+int32_t Json::JGet::toInt(const Json::JValue &value) {
+    if (std::holds_alternative<int32_t>(value)) {
+        return std::get<int32_t>(value);
+    } else if (std::holds_alternative<int64_t>(value)) {
+        return static_cast<int32_t>(std::get<int64_t>(value));
+    }
+    throw JException::GetBadValueException("The specified value can not convert to integer!");
+}
+
+int64_t Json::JGet::toBigInt(const Json::JValue &value) {
+    if (std::holds_alternative<int32_t>(value)) {
+        return static_cast<int64_t>(std::get<int32_t>(value));
+    } else if (std::holds_alternative<int64_t>(value)) {
+        return std::get<int64_t>(value);
+    }
+    throw JException::GetBadValueException("The specified value can not convert to big integer!");
+}
+
+float Json::JGet::toFloat(const Json::JValue &value) {
+    if (std::holds_alternative<float>(value)) {
+        return std::get<float>(value);
+    } else if (std::holds_alternative<double>(value)) {
+        return static_cast<float>(std::get<double>(value));
+    }
+    throw JException::GetBadValueException("The specified value can not convert to float!");
+}
+
+double Json::JGet::toDouble(const Json::JValue &value) {
+    if (std::holds_alternative<float>(value)) {
+        return static_cast<double>(std::get<float>(value));
+    } else if (std::holds_alternative<double>(value)) {
+        return std::get<double>(value);
+    }
+    throw JException::GetBadValueException("The specified value can not convert to double!");
+}
+
+const std::string &Json::JGet::toString(const Json::JValue &value) {
+    if (std::holds_alternative<std::string>(value)) {
+        return std::get<std::string>(value);
+    }
+    throw JException::GetBadValueException("The specified value can not convert to string!");
+}
+
+const Json::JArray *Json::JGet::toArray(const Json::JValue &value) {
+    if (std::holds_alternative<std::shared_ptr<JArray>>(value)) {
+        return std::get<std::shared_ptr<JArray>>(value).get();
+    }
+    throw JException::GetBadValueException("The specified value can not convert to JArray!");
+}
+
+const Json::JObject *Json::JGet::toObject(const Json::JValue &value) {
+    if (std::holds_alternative<std::shared_ptr<JObject>>(value)) {
+        return std::get<std::shared_ptr<JObject>>(value).get();
+    }
+    throw JException::GetBadValueException("The specified value can not convert to JObject!");
+}
+
+bool Json::JGet::isNull(const Json::JValue &value) {
+    return std::holds_alternative<std::monostate>(value);
+}
+
+bool Json::JGet::isBool(const Json::JValue &value) {
+    return std::holds_alternative<bool>(value);
+}
+
+bool Json::JGet::isInt(const Json::JValue &value) {
+    return std::holds_alternative<int32_t>(value);
+}
+
+bool Json::JGet::isBigInt(const Json::JValue &value) {
+    return std::holds_alternative<int64_t>(value);
+}
+
+bool Json::JGet::isFloat(const Json::JValue &value) {
+    return std::holds_alternative<float>(value);
+}
+
+bool Json::JGet::isDouble(const Json::JValue &value) {
+    return std::holds_alternative<double>(value);
+}
+
+bool Json::JGet::isString(const Json::JValue &value) {
+    return std::holds_alternative<std::string>(value);
+}
+
+bool Json::JGet::isArray(const Json::JValue &value) {
+    return std::holds_alternative<std::shared_ptr<JArray>>(value);
+}
+
+bool Json::JGet::isObject(const Json::JValue &value) {
+    return std::holds_alternative<std::shared_ptr<JArray>>(value);
 }
 
 

@@ -1,6 +1,13 @@
 
 #ifndef JSONBUILDER_JSON_H
 #define JSONBUILDER_JSON_H
+
+/**
+ * @headerfile Json.h
+ * @brief JsonBuilder Header File
+ * @author CatIsNotFound
+ * @brief Repo: https://github.com/CatIsNotFound/JsonBuilder
+ */
 #include <utility>
 #include <string>
 #include <cstdint>
@@ -122,6 +129,7 @@ namespace Json {
         using iterator = std::vector<JValue>::iterator;
 
         explicit JArray();
+        explicit JArray(const std::vector<JValue>&& values);
 
         [[nodiscard]] constIterator begin() const;
         [[nodiscard]] constIterator end() const;
@@ -205,6 +213,31 @@ namespace Json {
         std::string _json;
         JObject _root_object;
         JArray _root_array;
+    };
+
+    class JGet {
+    public:
+        explicit JGet() = delete;
+        ~JGet() = delete;
+        JGet& operator=(JGet&) = delete;
+        static bool toBool(const JValue& value);
+        static int32_t toInt(const JValue& value);
+        static int64_t toBigInt(const JValue& value);
+        static float toFloat(const JValue& value);
+        static double toDouble(const JValue& value);
+        static const std::string & toString(const JValue& value);
+        static const JArray* toArray(const JValue& value);
+        static const JObject* toObject(const JValue& value);
+
+        static bool isNull(const JValue& value);
+        static bool isBool(const JValue& value);
+        static bool isInt(const JValue& value);
+        static bool isBigInt(const JValue& value);
+        static bool isFloat(const JValue& value);
+        static bool isDouble(const JValue& value);
+        static bool isString(const JValue& value);
+        static bool isArray(const JValue& value);
+        static bool isObject(const JValue& value);
     };
 
     std::string escToString(const std::string& str);

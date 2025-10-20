@@ -86,9 +86,19 @@ cmake_minimum_required(VERSION 3.10)
 project(MyJsonApp)
 
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+# 指定 JsonBuilder 库路径（需要根据实际安装路径修改）
+set(JSON_BUILDER_DIR "/path/to/JsonBuilder")
 
 # 查找 JsonBuilder 库
-find_package(JsonBuilder 1.0.0 REQUIRED)
+find_package(JsonBuilder REQUIRED)
+
+# 包含 JsonBuilder 头文件
+include_directories(${JSON_BUILDER_DIR}/include)
+
+# 添加库文件搜索目录
+link_directories(${JSON_BUILDER_DIR}/lib)
 
 # 添加可执行文件
 add_executable(MyJsonApp main.cpp)
@@ -99,15 +109,25 @@ target_link_libraries(MyJsonApp JsonBuilder)
 
 在上面的示例中，我们假设项目的主文件为 `main.cpp`。通过 `find_package` 命令，我们可以找到安装的 JsonBuilder 库。然后，我们使用 `target_link_libraries` 命令将 JsonBuilder 库链接到可执行文件 `MyJsonApp` 中。
 
-请确保在项目的 CMakeLists.txt 文件中包含了正确的库路径。例如，在 Windows 系统下，你可以添加如下语句：
-
-```cmake
-set(CMAKE_PREFIX_PATH "C:/Program Files (x86)/JsonBuilder/JsonBuilder")
-```
+请确保在项目的 `CMakeLists.txt` 文件中包含了正确的库路径。
 
 这将告诉 CMake 在指定路径下查找 JsonBuilder 库。
 
-完成以上步骤后，你就可以在项目中使用 JsonBuilder 库了。
+**注意：对于导入的共享库，你还需要在 `CMakeLists.txt` 中添加自定义命令，将共享库复制到项目目录下。**
+
+```cmake
+add_custom_command(TARGET TestJson POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+        ${JSON_BUILDER_DIR}/bin
+        ${CMAKE_CURRENT_BINARY_DIR}
+)
+```
+
+完成以上步骤后，在你的项目中仅需包含以下头文件即可：
+
+```cpp
+#include <JsonBuilder/Json.h>
+```
 
 # 了解更多
 

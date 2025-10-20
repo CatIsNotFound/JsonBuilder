@@ -6,6 +6,7 @@ JsonBuilder 库包含以下类：
     - `JObject`：对象类
     - `JArray`：数组类
     - `JValue`：值类
+    - `JParser`: JSON 解析器类
     - `JDataType`：数据类型枚举
     - `JException`：异常命名空间
         - `KeyIsNotFoundException`：键未找到异常（通常出现在对象中访问不存在的键时）
@@ -202,12 +203,20 @@ JArray 类用于创建和操作 JSON 数组。以下是 JArray 类的成员函�
 
 ### 构造函数
 
-`JArray()`：创建一个空的 JSON 数组。
+- `JArray()`：创建一个空的 JSON 数组。
+- `JArray(const std::vector<JValue>&& values)`：创建一个包含指定值的 JSON 数组。
+
 
 示例用法 1：创建一个空的 JSON 数组。
 
 ```cpp
 Json::JArray array;
+```
+
+示例用法 2：创建一个包含多个值的 JSON 数组。
+
+```cpp
+Json::JArray array({1, 2, 3, true, "null"});
 ```
 
 ### 添加元素
@@ -429,6 +438,63 @@ for (auto& v : *secondValue) {
 }
 ```
 
+## JGet 类
+
+JGet 类用于获取 JValue 对象中的数据。你可以通过如下方式将 `JValue` 对象转换为对应的数据类型：
+
+- `JGet::toBool()`：将 `JValue` 对象转换为布尔值。
+- `JGet::toInt()`：将 `JValue` 对象转换为整数值。
+- `JGet::toBigInt()`：将 `JValue` 对象转换为大整数值。
+- `JGet::toFloat()`：将 `JValue` 对象转换为浮点数值。
+- `JGet::toString()`：将 `JValue` 对象转换为字符串。
+- `JGet::toArray()`：将 `JValue` 对象转换为 JSON 数组指针。
+- `JGet::toObject()`：将 `JValue` 对象转换为 JSON 对象指针。
+
+不仅如此，JGet 类还提供了判断数据类型的函数，你可以使用这些函数来判断 `JValue` 对象的具体数据类型。
+
+- `JGet::isNull()`：判断 `JValue` 对象是否为 `null`。
+- `JGet::isBool()`：判断 `JValue` 对象是否为布尔值。
+- `JGet::isInt()`：判断 `JValue` 对象是否为整数值。
+- `JGet::isBigInt()`：判断 `JValue` 对象是否为大整数值。
+- `JGet::isFloat()`：判断 `JValue` 对象是否为浮点数值。
+- `JGet::isDouble()`：判断 `JValue` 对象是否为双精度浮点数值。
+- `JGet::isString()`：判断 `JValue` 对象是否为字符串。
+- `JGet::isArray()`：判断 `JValue` 对象是否为 JSON 数组。
+- `JGet::isObject()`：判断 `JValue` 对象是否为 JSON 对象。
+
+以下是关于 JGet 类的示例用法：
+
+示例用法 1：将 `JValue` 对象转换为字符串
+
+```cpp
+Json::JValue value = "hello";
+std::string str = Json::JGet::toString(value);
+```
+
+执行后，`str` 变量的值为 `"hello"`。
+
+示例用法 2：将 `JValue` 对象转换为 `JArray` 对象并遍历所有元素
+
+```cpp
+Json::JArray array({1, 2, 3, true, "null"});
+for (auto& v : array) {
+    if (Json::JGet::isInt(v))
+        std::cout << Json::JGet::toInt(v) << " ";
+    else if (Json::JGet::isBool(v))
+        std::cout << (Json::JGet::toBool(v) ? "true" : "false") << " ";
+    else if (Json::JGet::isString(v))
+        std::cout << Json::JGet::toString(v) << " ";
+    // p.s: 示例中仅处理三种数据类型，你可以根据需要添加其他判断逻辑
+}
+```
+
+执行后，输出结果为：
+
+```
+null
+```
+
+
 ## JParser 类
 
 JParser 类用于生成和解析 JSON 数据。以下是 JParser 类的成员函数和用法：
@@ -436,14 +502,14 @@ JParser 类用于生成和解析 JSON 数据。以下是 JParser 类的成员函
 ### 构造函数
 
 - `JParser()`：创建一个空的 JParser 对象。
-- `JParser(const std::string& file_name)`：创建一个 JParser 对象，并从指定的 JSON 文件中加载数据。
+- `JParser(const std::string& file_name, size_t max_cols_inline = 1024)`：创建一个 JParser 对象，并从指定的 JSON 文件中加载数据。每行最多读取 `max_cols_inline` 个字符（默认行内最多读取 1024 个字符）。
 - `JParser(const JObject& root_object)`：创建一个 JParser 对象，并使用指定的 JSON 对象初始化数据。
 - `JParser(const JArray& root_array)`：创建一个 JParser 对象，并使用指定的 JSON 数组初始化数据。
 
-示例用法 1：从 `config.json` 文件中加载数据
+示例用法 1：从 `config.json` 文件中加载数据，并设置每行最多读取 127 个字符。
 
 ```cpp
-Json::JParser parser("config.json");
+Json::JParser parser("config.json", 127);
 ```
 
 示例用法 2：使用 JSON 对象初始化数据
@@ -500,7 +566,7 @@ std::cout << "]" << std::endl;
 
 #### `parseFromJsonFile()`
 
-`bool parseFromJsonFile(const std::string& file_name)`：从指定的 JSON 文件中加载数据并解析。
+`bool parseFromJsonFile(const std::string& file_name, size_t max_cols_inline = 1024)`：从指定的 JSON 文件中加载数据并解析。每行最多读取 `max_cols_inline` 个字符（默认行内最多读取 1024 个字符）。
 
 示例用法 2：从 `config.json` 文件中加载数据并解析
 
