@@ -25,41 +25,12 @@ A lightweight and efficient C++ JSON parsing and manipulation library.
    git clone https://github.com/CatIsNotFound/JsonBuilder.git
    ```
 
-## Data Types
-
-The library supports the following JSON data types:
-
-- `null` - represented by `std::monostate`
-- `boolean` - `true` or `false`
-- `integer` - 32-bit integer
-- `bigint` - 64-bit integer
-- `float` - 32-bit floating point
-- `double` - 64-bit floating point
-- `string` - UTF-8 encoded string
-- `array` - ordered collection of values
-- `object` - unordered collection of key-value pairs
-
-## Error Handling
-
-The library uses exceptions for error handling:
-
-- `KeyIsNotFoundException` - Thrown when trying to access a non-existent key in an object
-- `GetBadValueException` - Thrown when trying to convert a value to an incompatible type
-- `ParseJsonError` - Thrown when there's an error parsing JSON text
-
-```cpp
-try {
-    std::string value = object.toString("nonExistentKey");
-} catch (const Json::KeyIsNotFoundException& e) {
-    std::cerr << "Error: " << e.what() << std::endl;
-}
-```
-
 ## Learn more
 
-- [Usage](docs/usage.md)
-- [Example](docs/example.md)
-- [How to build with CMake?](docs/cmake-build.md)
+- [Usage](docs/en/usage.md)
+- [Example](docs/en/example.md)
+- [Class Reference](docs/en/class.md)
+- [How to build with CMake?](docs/en/cmake-build.md)
 
 ## Contributing
 

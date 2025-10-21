@@ -79,35 +79,14 @@ std::string jsonString = parser.dump(2);  // 使用2个空格缩进
 parser.dumpToJsonFile("output.json", 2);
 ```
 
-## 数据类型
+## 了解更多
 
-该库支持以下JSON数据类型：
+- [使用方法](docs/zh/usage.md)
+- [代码示例](docs/zh/example.md)
+- [类参考](docs/zh/class.md)
+- [如何使用 CMake 构建](docs/zh/cmake-build.md)
 
-- `null` - 由`std::monostate`表示
-- `boolean` - `true`或`false`
-- `integer` - 32位整数
-- `bigint` - 64位整数
-- `float` - 32位浮点数
-- `double` - 64位浮点数
-- `string` - UTF-8编码字符串
-- `array` - 值的有序集合
-- `object` - 键值对的无序集合
 
-## 错误处理
-
-该库使用异常进行错误处理：
-
-- `KeyIsNotFoundException` - 尝试访问对象中不存在的键时抛出
-- `GetBadValueException` - 尝试将值转换为不兼容类型时抛出
-- `ParseJsonError` - 解析JSON文本时出错时抛出
-
-```cpp
-try {
-    std::string value = object.toString("nonExistentKey");
-} catch (const Json::KeyIsNotFoundException& e) {
-    std::cerr << "错误: " << e.what() << std::endl;
-}
-```
 
 ## 贡献
 

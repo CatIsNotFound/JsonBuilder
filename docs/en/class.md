@@ -1,264 +1,227 @@
 # JsonBuilder Class Reference
 
-This document provides detailed reference information for JsonBuilder library classes, including the methods, properties, and usage examples for each class.
+The JsonBuilder library includes the following classes:
+
+- JsonBuilder (namespace)
+    - `JObject`: Object class
+    - `JArray`: Array class
+    - `JValue`: Value class
+    - `JParser`: JSON parser class
+    - `JGet`: Get data from `JValue`
+    - `JDataType`: Data type enumeration
+        - `Null` - represented by `std::monostate`
+        - `Bool` - `true` or `false`
+        - `Int` - 32-bit integer
+        - `BigInt` - 64-bit integer
+        - `Float` - 32-bit floating point
+        - `Double` - 64-bit floating point
+        - `String` - UTF-8 encoded string
+        - `Array` - ordered collection of values
+        - `Object` - unordered collection of key-value pairs
+    - `JException`: Exception namespace
+        - `KeyIsNotFoundException`: Key not found exception (usually occurs when accessing a non-existent key in an object)
+        - `GetBadValueException`: Get bad value exception (usually occurs when trying to convert a value to an incompatible type)
+        - `ParseJsonError`: Parse JSON error (usually occurs when the JSON text format is incorrect)
 
 ## JObject Class
 
-The JObject class is used to create and manipulate JSON objects. Here are its member functions and usage:
+The JObject class is used to create and manipulate JSON objects. Here are the member functions and usage of the JObject class:
 
-### Construction
+### Constructors
 
-- `JObject()`: Creates an empty JSON object.
-- `JObject(std::initializer_list<std::pair<const std::string, JValue>> init)`: Creates a JSON object with initial values.
+`JObject()`: Creates an empty JSON object.
 
-Example Usage 1: Creating an empty JSON object.
-
-```cpp
-Json::JObject object;
-```
-
-Example Usage 2: Creating a JSON object with initial values.
-
-```cpp
-Json::JObject object = {
-    {"name", "Tom"},
-    {"age", 25},
-    {"isStudent", true}
-};
-```
-
-### Setting Values
-
-JObject provides the following methods to set values:
-
-- `void set(const std::string& key, const JValue& value)`: Sets a value for a specified key.
-- `void set(const std::string& key, bool value)`: Sets a boolean value for a specified key.
-- `void set(const std::string& key, int32_t value)`: Sets a 32-bit integer value for a specified key.
-- `void set(const std::string& key, int64_t value)`: Sets a 64-bit integer value for a specified key.
-- `void set(const std::string& key, float value)`: Sets a 32-bit floating point value for a specified key.
-- `void set(const std::string& key, double value)`: Sets a 64-bit floating point value for a specified key.
-- `void set(const std::string& key, const std::string& value)`: Sets a string value for a specified key.
-- `void set(const std::string& key, std::string&& value)`: Sets a string value for a specified key (move semantics).
-- `void set(const std::string& key, const JObject& value)`: Sets a JSON object for a specified key.
-- `void set(const std::string& key, JObject&& value)`: Sets a JSON object for a specified key (move semantics).
-- `void set(const std::string& key, const JArray& value)`: Sets a JSON array for a specified key.
-- `void set(const std::string& key, JArray&& value)`: Sets a JSON array for a specified key (move semantics).
-- `void set(const std::string& key, std::monostate)`: Sets a null value for a specified key.
-
-Example Usage 3: Setting values of different types for different keys
+Usage:
 
 ```cpp
 Json::JObject object;
-object.set("name", "Tom");
-object.set("age", 25);
-object.set("isStudent", true);
-object.set("scores", Json::JArray({85, 90, 95}));
-object.set("address", Json::JObject({{"city", "Beijing"}, {"district", "Haidian"}}));
-object.set("null_value", std::monostate{});
 ```
 
-JObject also supports setting values through the `[]` operator:
+### Setting Key-Value Pairs
 
-- `JValue& operator[](const std::string& key)`: Returns a reference to the value associated with the specified key.
+#### `set()`
 
-Example Usage 4: Setting values using the `[]` operator
+`void set(const std::string& key, const JValue& value)`: Sets a key-value pair in the JSON object.
+
+Example Usage 1: Create a key-value pair with key "name" and value "John Doe".
 
 ```cpp
-Json::JObject object;
-object["name"] = "Tom";
-object["age"] = 25;
-object["isStudent"] = true;
-object["scores"] = Json::JArray({85, 90, 95});
-object["address"] = Json::JObject({{"city", "Beijing"}, {"district", "Haidian"}});
-object["null_value"] = std::monostate{};
+object.set("name", Json::JValue("John Doe"));
 ```
 
-### Getting Values
+To create a nested object, use the `JObject` constructor.
 
-#### `get()`
-
-- `JValue get(const std::string& key) const`: Gets the value associated with the specified key.
-
-Example Usage 5: Getting a value using the `get()` method
+Example Usage 2: Continuing from Example Usage 1, create a key-value pair with key "address" and value as a nested object.
 
 ```cpp
-Json::JObject object = {"name", "Tom"};
-Json::JValue nameValue = object.get("name");
-```
-
-#### `toXXX()`
-
-JObject provides `toXXX()` methods for converting values in the JSON object to different data types:
-
-- `bool toBool(const std::string& key) const`: Converts the value associated with the specified key to a boolean value.
-- `int32_t toInt(const std::string& key) const`: Converts the value associated with the specified key to a 32-bit integer.
-- `int64_t toBigInt(const std::string& key) const`: Converts the value associated with the specified key to a 64-bit integer.
-- `float toFloat(const std::string& key) const`: Converts the value associated with the specified key to a 32-bit floating point number.
-- `double toDouble(const std::string& key) const`: Converts the value associated with the specified key to a 64-bit floating point number.
-- `const std::string& toString(const std::string& key) const`: Converts the value associated with the specified key to a string.
-- `const JArray* toArray(const std::string& key) const`: Converts the value associated with the specified key to an array.
-- `const JObject* toObject(const std::string& key) const`: Converts the value associated with the specified key to an object.
-
-For integer types, whether the JValue stores an `int32_t` or `int64_t`, you can use `toInt()` or `toBigInt()` to convert it to `int32_t` or `int64_t`. Similarly for floating point types.
-
-> Note:
-> 
-> - When converting an `int64_t` value to `int32_t` using `toInt()`, higher-order bits may be lost.
-> - When converting a `double` value to `float` using `toFloat()`, precision may be lost.
-
-Example Usage 6: Converting values to different data types
-
-```cpp
-Json::JObject object = {
-    {"name", "Tom"},
-    {"age", 25},
-    {"isStudent", true},
-    {"scores", Json::JArray({85, 90, 95})}
-};
-
-std::string name = object.toString("name");    // name = "Tom"
-int32_t age = object.toInt("age");             // age = 25
-bool isStudent = object.toBool("isStudent");   // isStudent = true
-const Json::JArray* scores = object.toArray("scores");
+Json::JObject addressObject;
+addressObject.set("city", Json::JValue("New York"));
+object.set("address", addressObject);
 ```
 
 #### `operator[]`
 
-- `JValue operator[](const std::string& key) const`: Returns the value associated with the specified key.
+`JValue& operator[](const std::string& key)`: Accesses a value in the JSON object by key.
 
-Example Usage 7: Getting a value using the `[]` operator
-
-```cpp
-Json::JObject object = {"name", "Tom"};
-Json::JValue nameValue = object["name"];
-```
-
-### Removing Keys
-
-- `void remove(const std::string& key)`: Removes the key-value pair associated with the specified key from the JSON object.
-
-Example Usage 8: Removing a key from the JSON object
+Example Usage 3: Use `operator[]` to create an "age" key and set its value to 30.
 
 ```cpp
-Json::JObject object = {
-    {"name", "Tom"},
-    {"age", 25}
-};
-object.remove("age");
+object["age"] = Json::JValue(30);
 ```
 
-### Checking Keys
+Of course, you can also use `operator[]` to set the value of an existing key. This won't be elaborated further here.
 
-- `bool has(const std::string& key) const`: Checks if the JSON object contains a specified key.
-- `bool isNull(const std::string& key) const`: Checks if the value associated with the specified key is `null`.
+### Getting Key-Value Pairs
 
-Example Usage 9: Checking if a key exists
+#### `get()`
+
+`JValue & get(const std::string& key)`: Gets the value of a specified key in the JSON object.
+
+Example Usage 4: Get the value corresponding to the "name" key.
 
 ```cpp
-Json::JObject object = {"name", "Tom"};
-if (object.has("name")) {
-    // Process the key
-}
+Json::JValue nameValue = object.get("name");
 ```
 
-### Iterating Over Keys
+#### `operator[]`
+
+`JValue& operator[](const std::string& key)`: Accesses a value in the JSON object by key.
+
+Example Usage 5: Use `operator[]` to get the value corresponding to the "age" key.
+
+```cpp
+Json::JValue ageValue = object["age"];
+int age = std::get<int32_t>(ageValue);
+```
+
+#### `toXXX()`
+
+JObject provides the following methods to convert JSON objects to other data types:
+
+- `bool toBool(const std::string& key) const`: Converts the key in the JSON object to a boolean value.
+- `int32_t toInt(const std::string& key) const`: Converts the key in the JSON object to a 32-bit integer.
+- `int64_t toBigInt(const std::string& key) const`: Converts the key in the JSON object to a 64-bit integer.
+- `float toFloat(const std::string& key) const`: Converts the key in the JSON object to a 32-bit floating point number.
+- `double toDouble(const std::string& key) const`: Converts the key in the JSON object to a 64-bit floating point number.
+- `std::string toString(const std::string& key) const`: Converts the JSON object to a string.
+- `JArray toArray(const std::string& key) const`: Converts the JSON object to an array.
+- `JObject toObject(const std::string& key) const`: Converts the JSON object to an object.
+
+For stored integer type data, regardless of whether `JValue` stores `int32_t` or `int64_t`, you can use the `toInt()` or `toBigInt()` methods to convert it to `int32_t` or `int64_t` type.
+For stored floating point type data, regardless of whether `JValue` stores `float` or `double`, you can use the `toFloat()` or `toDouble()` methods to convert it to `float` or `double` type.
+
+> Note:
+>
+> - When using the `toInt()` method to convert a value of type `int64_t` to type `int32_t`, high-order data may be lost.
+> - When using the `toFloat()` method to convert a value of type `double` to type `float`, precision loss may occur.
+
+Example Usage 6: Convert the value corresponding to the "age" key to a 32-bit integer.
+
+```cpp
+int32_t age = object.toInt("age");
+```
+
+### Other Functions
 
 #### `keys()`
 
-- `const std::vector<std::string>& keys() const`: Returns a list of all keys in the JSON object.
+`std::vector<std::string> keys() const`: Gets a list of all keys in the JSON object.
 
-Example Usage 10: Getting a list of all keys
+Example Usage 7: Get a list of all keys in the JSON object.
 
 ```cpp
-Json::JObject object = {
-    {"name", "Tom"},
-    {"age", 25},
-    {"isStudent", true}
-};
+std::vector<std::string> keyList = object.keys();
+```
 
-const auto& keys = object.keys();
-for (const auto& key : keys) {
-    std::cout << key << std::endl;
-}
+#### `isNull()`
+
+`bool isNull(const std::string& key) const`: Checks if the specified key in the JSON object is `null`.
+
+Example Usage 8: Check if the "name" key is `null`.
+
+```cpp
+bool isNameNull = object.isNull("name");
 ```
 
 #### `begin()`, `end()`
 
-Non-const version:
+Non-`const` version:
 
-- `iterator begin()`: Returns an iterator pointing to the beginning of the JSON object.
-- `iterator end()`: Returns an iterator pointing to the end of the JSON object.
+- `std::vector<JValue>::iterator begin()`: Returns an iterator pointing to the first value in the JSON object.
+- `std::vector<JValue>::iterator end()`: Returns an iterator pointing to the last value in the JSON object.
 
-Const version:
+`const` version:
 
-- `constIterator begin() const`: Returns a const iterator pointing to the beginning of the JSON object.
-- `constIterator end() const`: Returns a const iterator pointing to the end of the JSON object.
+- `std::vector<JValue>::constIterator begin() const`: Returns an iterator pointing to the first value in the JSON object.
+- `std::vector<JValue>::constIterator end() const`: Returns an iterator pointing to the last value in the JSON object.
 
-Example Usage 11: Iterating over all key-value pairs in a JSON object
+Example Usage 9: Iterate through all values in the JSON object.
 
 ```cpp
 for (auto it = object.begin(); it != object.end(); ++it) {
-    const std::string& key = it->first;
-    const Json::JValue& value = it->second;
-    // Process key and value
+    Json::JValue value = *it;
+    // process value
 }
 ```
 
-Or you can use a range-based for loop:
+Or you can use a range-based loop:
 
 ```cpp
-for (const auto& [key, value] : object) {
-    // Process key and value
+for (const auto& value : object) {
+    // process value
 }
 ```
 
-### Other Methods
+#### `size()`
 
-#### `size()`, `length()`
+The `size_t size() const` method returns the number of key-value pairs contained in the JSON object.
 
-- `size_t size() const`: Returns the number of key-value pairs in the JSON object.
-- `size_t length() const`: Returns the number of key-value pairs in the JSON object. (Same as `size()`)
+#### `valid()`
 
-#### `empty()`
+The `bool valid(const std::string& key) const` method checks if the specified key exists in the JSON object.
 
-- `bool empty() const`: Checks if the JSON object is empty.
-
-Example Usage 12: Checking if a JSON object is empty
+Example Usage 10: Check if the "age" key exists.
 
 ```cpp
-Json::JObject object;
-if (object.empty()) {
-    // JSON object is empty
-}
+bool isAgeValid = object.valid("age");
+```
+
+#### `remove()`
+
+The `void remove(const std::string& key)` method deletes the key-value pair corresponding to the specified key in the JSON object.
+
+Example Usage 11: Delete the key-value pair corresponding to the "age" key.
+
+```cpp
+object.remove("age");
 ```
 
 #### `clear()`
 
-- `void clear()`: Clears all key-value pairs from the JSON object.
+The `void clear()` method clears the JSON object, deleting all key-value pairs.
 
-Example Usage 13: Clearing a JSON object
+Example Usage 12: Clear the JSON object.
 
 ```cpp
-Json::JObject object = {"name", "Tom"};
 object.clear();
 ```
 
 ## JArray Class
 
-The JArray class is used to create and manipulate JSON arrays. Here are its member functions and usage:
+The JArray class is used to create and manipulate JSON arrays. Here are the member functions and usage of the JArray class:
 
-### Construction
+### Constructors
 
 - `JArray()`: Creates an empty JSON array.
-- `JArray(const std::vector<JValue>&& values)`: Creates a JSON array with specified values.
+- `JArray(const std::vector<JValue>&& values)`: Creates a JSON array containing the specified values.
 
-Example Usage 1: Creating an empty JSON array.
+Example Usage 1: Create an empty JSON array.
 
 ```cpp
 Json::JArray array;
 ```
 
-Example Usage 2: Creating a JSON array with multiple values.
+Example Usage 2: Create a JSON array containing multiple values.
 
 ```cpp
 Json::JArray array({1, 2, 3, true, "null"});
@@ -266,16 +229,16 @@ Json::JArray array({1, 2, 3, true, "null"});
 
 ### Adding Elements
 
-JArray supports the following ways to add elements:
+The JArray class supports the following ways to add elements:
 
 - `void append(const JValue& value)`: Adds an element to the end of the JSON array.
-- `void pushBack(const JValue& value)`: Adds an element to the end of the JSON array. (Same as `append()`)
+- `void pushBack(const JValue& value)`: Adds an element to the end of the JSON array. (Same as `append()` function)
 - `void pushFront(const JValue& value)`: Adds an element to the beginning of the JSON array.
 - `void insert(size_t index, const JValue& value)`: Inserts an element at the specified position.
 - `void insert(size_t index, const JArray& array)`: Inserts a JSON array at the specified position.
 - `void insert(size_t index, const JObject& object)`: Inserts a JSON object at the specified position.
 
-Example Usage 2: Adding multiple elements of different types at different positions
+Example Usage 2: Add multiple elements of different types to the JSON array at different positions
 
 ```cpp
 Json::JArray array;
@@ -286,33 +249,33 @@ array.insert(1, "hello");
 array.insert(2, Json::JArray());
 ```
 
-After execution, the elements in `array` are: `[123, "hello", [], true, {}]`.
+After execution, the elements in the `array` array are: `[123, "hello", [], true, {}]`.
 
 -------
 
-JArray also provides the `<<` operator for adding elements:
+JArray also provides a way to add elements based on the `<<` operator:
 
-- `JArray & operator<<(const JValue& value)`: Adds an element to the end of the JSON array using the `<<` operator.
-- `JArray & operator<<(const JArray& array)`: Adds a JSON array to the end of the JSON array using the `<<` operator.
-- `JArray & operator<<(const JObject& object)`: Adds a JSON object to the end of the JSON array using the `<<` operator.
+`JArray & operator<<(const JValue& value)`: Use the `<<` operator to add an element to the end of the JSON array.
+`JArray & operator<<(const JArray& array)`: Use the `<<` operator to add a JSON array to the end of the JSON array.
+`JArray & operator<<(const JObject& object)`: Use the `<<` operator to add a JSON object to the end of the JSON array.
 
-Example Usage 3: Adding multiple elements of different types to the end of a JSON array using the `<<` operator
+Example Usage 3: Use the `<<` operator to add multiple elements of different types to the end of the JSON array
 
 ```cpp
 Json::JArray array;
 array << true << Json::JObject() << 123 << "hello" << Json::JArray();
 ```
 
-After execution, the elements in `array` are: `[true, {}, 123, "hello", []]`.
+After execution, the elements in the `array` array are: `[true, {}, 123, "hello", []]`.
 
 ### Removing Elements
 
-- `void remove(size_t index)`: Removes the element at the specified position from the JSON array.
-- `void popBack()`: Removes an element from the end of the JSON array.
-- `void popFront()`: Removes an element from the beginning of the JSON array.
-- `void clear()`: Clears the JSON array, removing all elements.
+`void remove(size_t index)`: Removes the element at the specified position from the JSON array.
+`void popBack()`: Removes an element from the end of the JSON array.
+`void popFront()`: Removes an element from the beginning of the JSON array.
+`void clear()`: Clears the JSON array, deleting all elements.
 
-Example Usage 4: Removing elements from a JSON array
+Example Usage 4: Remove elements at specified positions from the JSON array
 
 ```cpp
 Json::JArray array;
@@ -322,13 +285,13 @@ array.popBack();
 array.popFront();
 ```
 
-After execution, the elements in `array` are: `[{}, "hello"]`.
+After execution, the elements in the `array` array are: `[{}, "hello"]`.
 
 ### Accessing Elements
 
 #### `toXXX()`
 
-JArray also provides `toXXX()` methods for converting elements in the JSON array to different data types.
+The JArray class also provides `toXXX()` methods for converting an element in the JSON array to values of different data types.
 
 - `bool toBool(size_t index) const`: Converts the element at the specified position in the JSON array to a boolean value.
 - `int32_t toInt(size_t index) const`: Converts the element at the specified position in the JSON array to a 32-bit integer.
@@ -339,14 +302,15 @@ JArray also provides `toXXX()` methods for converting elements in the JSON array
 - `const JArray* toArray(size_t index) const`: Converts the element at the specified position in the JSON array to an array.
 - `const JObject* toObject(size_t index) const`: Converts the element at the specified position in the JSON array to an object.
 
-For integer types, whether the JValue stores an `int32_t` or `int64_t`, you can use `toInt()` or `toBigInt()` to convert it to `int32_t` or `int64_t`. Similarly for floating point types.
+For stored integer type data, regardless of whether `JValue` stores `int32_t` or `int64_t`, you can use the `toInt()` or `toBigInt()` methods to convert it to `int32_t` or `int64_t` type.
+For stored floating point type data, regardless of whether `JValue` stores `float` or `double`, you can use the `toFloat()` or `toDouble()` methods to convert it to `float` or `double` type.
 
 > Note:
-> 
-> - When converting an `int64_t` value to `int32_t` using `toInt()`, higher-order bits may be lost.
-> - When converting a `double` value to `float` using `toFloat()`, precision may be lost.
+>
+> - When using the `toInt()` method to convert a value of type `int64_t` to type `int32_t`, high-order data may be lost.
+> - When using the `toFloat()` method to convert a value of type `double` to type `float`, precision loss may occur.
 
-Example Usage 5: Accessing the third element in the array
+Example Usage 5: Access the 3rd element in the array
 
 ```cpp
 Json::JArray array;
@@ -354,13 +318,13 @@ array << 100 << 200 << 300 << 400 << 500;
 int32_t thirdElement = array.toInt(2);
 ```
 
-After execution, the value of `thirdElement` is `300`.
+After execution, the value of the `thirdElement` variable is `300`.
 
 #### `operator[]`
 
-- `JValue operator[](size_t index) const`: Returns the element at the specified position in the JSON array.
+`JValue operator[](size_t index) const`: Returns the element at the specified position in the JSON array.
 
-Example Usage 6: Accessing elements at specified positions in a JSON array
+Example Usage 6: Access the element at the specified position in the JSON array
 
 ```cpp
 Json::JArray array;
@@ -368,14 +332,14 @@ array << true << Json::JObject() << 123 << "hello" << Json::JArray();
 Json::JValue value = array[2];
 ```
 
-After execution, the value of `value` is `123`.
+After execution, the value of the `value` variable is `123`.
 
-### Other Methods
+### Other Functions
 
 #### `size()`, `length()`
 
-- `size_t size() const`: Returns the number of elements in the JSON array.
-- `size_t length() const`: Returns the number of elements in the JSON array. (Same as `size()`)
+- `size_t size() const`: Returns the number of elements contained in the JSON array.
+- `size_t length() const`: Returns the number of elements contained in the JSON array. (Same as `size()` function)
 
 #### `isNull()`
 
@@ -383,30 +347,30 @@ After execution, the value of `value` is `123`.
 
 #### `begin()`, `end()`
 
-Non-const version:
+Non-`const` version:
 
 - `iterator begin()`: Returns an iterator pointing to the beginning of the JSON array.
 - `iterator end()`: Returns an iterator pointing to the end of the JSON array.
 
-Const version:
+`const` version:
 
-- `constIterator begin() const`: Returns a const iterator pointing to the beginning of the JSON array.
-- `constIterator end() const`: Returns a const iterator pointing to the end of the JSON array.
+- `constIterator begin() const`: Returns an iterator pointing to the beginning of the JSON array.
+- `constIterator end() const`: Returns an iterator pointing to the end of the JSON array.
 
-Example Usage 7: Iterating over all elements in a JSON array.
+Example Usage 7: Iterate through all elements in the JSON array.
 
 ```cpp
 for (auto it = array.begin(); it != array.end(); ++it) {
     Json::JValue value = *it;
-    // Process value
+    // process value
 }
 ```
 
-Or you can use a range-based for loop to iterate over all elements in the JSON array:
+Or you can use a range-based `for` loop to iterate through all elements in the JSON array:
 
 ```cpp
 for (const auto& value : array) {
-    // Process value
+    // process value
 }
 ```
 
@@ -415,11 +379,11 @@ for (const auto& value : array) {
 - `void sort(const std::function<bool(JValue&, JValue&)>& sort_function)`: Sorts the elements in the JSON array.
 
 > Note:
-> 
-> - The sorting function `sort_function` must be a function object for comparing two `JValue` objects.
-> - The sorting function `sort_function` must return a `bool` value indicating the relative order of the two `JValue` objects.
+>
+> - The sorting function `sort_function` must be a function object used to compare the sizes of two `JValue` objects.
+> - The sorting function `sort_function` must return a value of type `bool` to indicate the relative order of the two `JValue` objects.
 
-Example Usage 8: Sorting elements in a JSON array
+Example Usage 8: Sort the elements in the JSON array
 
 ```cpp
 Json::JArray array;
@@ -431,7 +395,7 @@ array.sort([](Json::JValue& a, Json::JValue& b) {
 });
 ```
 
-After execution, the elements in `array` are: `[1, 2, 3, 4, 5]`.
+After execution, the elements in the `array` array are: `[1, 2, 3, 4, 5]`.
 
 ## JValue
 
@@ -451,21 +415,21 @@ using JValue = std::variant<
                 >;
 ```
 
-JValue itself does not provide functions for converting or setting data types, but you can use `std::get()` to retrieve data types and `std::holds_alternative()` to check data types.
+JValue itself does not provide functions for converting data types or setting data types, but you can use the `std::get()` function to obtain data types and use the `std::holds_alternative()` function to determine data types.
 
-Example Usage 1: Checking if the data type of `value` is `int32_t`
+Example Usage 1: Determine if the data type of `value` is `int32_t`
 
 ```cpp
 Json::JValue value = 123;
 if (std::holds_alternative<int32_t>(value)) {
     int32_t intValue = std::get<int32_t>(value);
-    // Process intValue
+    // process intValue
 }
 ```
 
-For data of type `JArray` or `JObject`, you can use the `std::get()` function to get the corresponding pointer and then use the pointer to access the data.
+For data of type `JArray` or `JObject`, you can obtain the corresponding pointer through the `std::get()` function, and then use the pointer to access the data.
 
-Example Usage 2: Getting the second element in `array`
+Example Usage 2: Get the second element in `array`
 
 ```cpp
 Json::JArray array;
@@ -483,40 +447,40 @@ for (auto& v : *secondValue) {
 
 ## JGet Class
 
-The JGet class is used to retrieve data from JValue objects. You can convert `JValue` objects to corresponding data types in the following ways:
+The JGet class is used to get data from JValue objects. You can convert `JValue` objects to corresponding data types in the following ways:
 
-- `JGet::toBool()`: Converts a `JValue` object to a boolean value.
-- `JGet::toInt()`: Converts a `JValue` object to an integer value.
-- `JGet::toBigInt()`: Converts a `JValue` object to a large integer value.
-- `JGet::toFloat()`: Converts a `JValue` object to a floating point value.
-- `JGet::toString()`: Converts a `JValue` object to a string.
-- `JGet::toArray()`: Converts a `JValue` object to a JSON array pointer.
-- `JGet::toObject()`: Converts a `JValue` object to a JSON object pointer.
+- `JGet::toBool()`: Converts the `JValue` object to a boolean value.
+- `JGet::toInt()`: Converts the `JValue` object to an integer value.
+- `JGet::toBigInt()`: Converts the `JValue` object to a big integer value.
+- `JGet::toFloat()`: Converts the `JValue` object to a floating point value.
+- `JGet::toString()`: Converts the `JValue` object to a string.
+- `JGet::toArray()`: Converts the `JValue` object to a JSON array pointer.
+- `JGet::toObject()`: Converts the `JValue` object to a JSON object pointer.
 
-Additionally, the JGet class provides functions to check data types, which you can use to determine the specific data type of a `JValue` object.
+In addition, the JGet class also provides functions to determine data types, you can use these functions to determine the specific data type of the `JValue` object.
 
-- `JGet::isNull()`: Checks if a `JValue` object is `null`.
-- `JGet::isBool()`: Checks if a `JValue` object is a boolean value.
-- `JGet::isInt()`: Checks if a `JValue` object is an integer value.
-- `JGet::isBigInt()`: Checks if a `JValue` object is a large integer value.
-- `JGet::isFloat()`: Checks if a `JValue` object is a floating point value.
-- `JGet::isDouble()`: Checks if a `JValue` object is a double precision floating point value.
-- `JGet::isString()`: Checks if a `JValue` object is a string.
-- `JGet::isArray()`: Checks if a `JValue` object is a JSON array.
-- `JGet::isObject()`: Checks if a `JValue` object is a JSON object.
+- `JGet::isNull()`: Determines if the `JValue` object is `null`.
+- `JGet::isBool()`: Determines if the `JValue` object is a boolean value.
+- `JGet::isInt()`: Determines if the `JValue` object is an integer value.
+- `JGet::isBigInt()`: Determines if the `JValue` object is a big integer value.
+- `JGet::isFloat()`: Determines if the `JValue` object is a floating point value.
+- `JGet::isDouble()`: Determines if the `JValue` object is a double-precision floating point value.
+- `JGet::isString()`: Determines if the `JValue` object is a string.
+- `JGet::isArray()`: Determines if the `JValue` object is a JSON array.
+- `JGet::isObject()`: Determines if the `JValue` object is a JSON object.
 
-Here are some example usages of the JGet class:
+The following are example usages of the JGet class:
 
-Example Usage 1: Converting a `JValue` object to a string
+Example Usage 1: Convert a `JValue` object to a string
 
 ```cpp
 Json::JValue value = "hello";
 std::string str = Json::JGet::toString(value);
 ```
 
-After execution, the value of `str` is `"hello"`.
+After execution, the value of the `str` variable is `"hello"`.
 
-Example Usage 2: Converting a `JValue` object to a `JArray` object and iterating over all elements
+Example Usage 2: Convert a `JValue` object to a `JArray` object and iterate through all elements
 
 ```cpp
 Json::JArray array({1, 2, 3, true, "null"});
@@ -527,11 +491,11 @@ for (auto& v : array) {
         std::cout << (Json::JGet::toBool(v) ? "true" : "false") << " ";
     else if (Json::JGet::isString(v))
         std::cout << Json::JGet::toString(v) << " ";
-    // Note: This example only handles three data types, you can add other check logic as needed
+    // p.s: Only three data types are handled in the example, you can add other judgment logic as needed
 }
 ```
 
-After execution, the output is:
+After execution, the output result is:
 
 ```
 null
@@ -539,22 +503,22 @@ null
 
 ## JParser Class
 
-The JParser class is used to generate and parse JSON data. Here are its member functions and usage:
+The JParser class is used to generate and parse JSON data. Here are the member functions and usage of the JParser class:
 
-### Construction
+### Constructors
 
 - `JParser()`: Creates an empty JParser object.
-- `JParser(const std::string& file_name, size_t max_cols_inline = 1024)`: Creates a JParser object and loads data from the specified JSON file. Reads at most `max_cols_inline` characters per line (default is 1024 characters per line).
+- `JParser(const std::string& file_name, size_t max_cols_inline = 1024)`: Creates a JParser object and loads data from the specified JSON file. Each line reads up to `max_cols_inline` characters (default maximum 1024 characters per line).
 - `JParser(const JObject& root_object)`: Creates a JParser object and initializes data using the specified JSON object.
 - `JParser(const JArray& root_array)`: Creates a JParser object and initializes data using the specified JSON array.
 
-Example Usage 1: Loading data from the `config.json` file and setting a maximum of 127 characters per line.
+Example Usage 1: Load data from the `config.json` file and set a maximum of 127 characters per line.
 
 ```cpp
 Json::JParser parser("config.json", 127);
 ```
 
-Example Usage 2: Initializing data using a JSON object
+Example Usage 2: Initialize data using a JSON object
 
 ```cpp
 Json::JObject object;
@@ -567,13 +531,13 @@ Json::JParser parser(object);
 
 ### Parsing Data
 
-The JParser class provides the following methods for parsing JSON data:
+The JParser class provides the following methods to parse JSON data:
 
 #### `parse()`
 
-- `void parse(const std::string& json)`: Parses the specified JSON string.
+`void parse(const std::string& json)`: Parses the specified JSON string.
 
-Example Usage 1: Parsing data from a JSON string and getting a list of object keys
+Example Usage 1: Parse data from a JSON string and get the object's key list
 
 ```cpp
 std::string json = R"(
@@ -601,16 +565,16 @@ for (auto& key : keys_list) {
 std::cout << "]" << std::endl;
 ```
 
-After execution, the output is:
+After execution, the output result is:
 ```
 ["key1", "key2", "key3", "array"]
 ```
 
 #### `parseFromJsonFile()`
 
-- `bool parseFromJsonFile(const std::string& file_name, size_t max_cols_inline = 1024)`: Loads and parses data from the specified JSON file. Reads at most `max_cols_inline` characters per line (default is 1024 characters per line).
+`bool parseFromJsonFile(const std::string& file_name, size_t max_cols_inline = 1024)`: Loads and parses data from the specified JSON file. Each line reads up to `max_cols_inline` characters (default maximum 1024 characters per line).
 
-Example Usage 2: Loading and parsing data from the `config.json` file
+Example Usage 2: Load and parse data from the `config.json` file
 
 ```cpp
 Json::JParser parser;
@@ -624,13 +588,13 @@ if (is_success) {
 
 ### Generating Data
 
-The JParser class provides the following methods for generating JSON data:
+The JParser class provides the following methods to generate JSON data:
 
 #### `dump()`
 
-- `std::string dump(size_t indent = 2)`: Converts JSON data to a string.
+`std::string dump(size_t indent = 2)`: Converts JSON data to a string.
 
-Example Usage 1: Converting a JSON object to a string
+Example Usage 1: Convert a JSON object to a string
 
 ```cpp
 Json::JObject object;
@@ -643,7 +607,7 @@ std::string json = parser.dump(4);
 std::cout << json << std::endl;
 ```
 
-After execution, the output is:
+After execution, the output result is:
 ```json
 {
     "key1": "value1",
@@ -652,7 +616,7 @@ After execution, the output is:
 }
 ```
 
-Example Usage 2: Converting a JSON array to a string
+Example Usage 2: Convert a JSON array to a string
 
 ```cpp
 Json::JArray array;
@@ -663,7 +627,7 @@ std::string json = parser.dump(4);
 std::cout << json << std::endl;
 ```
 
-After execution, the output is:
+After execution, the output result is:
 ```json
 [
     1,
@@ -674,7 +638,7 @@ After execution, the output is:
 ]
 ```
 
-Example Usage 3: Adding some empty arrays, empty objects, and null values to a JSON object
+Example Usage 3: Add some empty arrays, empty objects, and null values to a JSON object
 
 ```cpp
 Json::JObject obj;
@@ -698,9 +662,9 @@ The content of the output `config.json` file is as follows:
 
 #### `dumpToJsonFile()`
 
-- `bool dumpToJsonFile(const std::string& file_name, size_t indent = 2)`: Converts JSON data to a string and writes it to the specified JSON file.
+`bool dumpToJsonFile(const std::string& file_name, size_t indent = 2)`: Converts JSON data to a string and writes it to the specified JSON file.
 
-Example Usage 1: Converting a JSON object to a string and writing it to the `config.json` file
+Example Usage 1: Convert a JSON object to a string and write it to the `config.json` file
 
 ```cpp
 Json::JObject object;
@@ -722,7 +686,7 @@ The content of the output `config.json` file is as follows:
 }
 ```
 
-Example Usage 2: Converting a JSON array to a string and writing it to the `config.json` file
+Example Usage 2: Convert a JSON array to a string and write it to the `config.json` file
 
 ```cpp
 Json::JArray array;
@@ -744,7 +708,7 @@ The content of the output `config.json` file is as follows:
 ]
 ```
 
-Example Usage 3: Adding some empty arrays, empty objects, and null values to a JSON object
+Example Usage 3: Add some empty arrays, empty objects, and null values to a JSON object
 
 ```cpp
 Json::JObject obj;
@@ -772,24 +736,24 @@ The JParser class provides the following methods to set the root object or root 
 
 #### `setRootObject()`
 
-- `void setRootObject(JObject& object)`: Sets the root object of the parser to the specified JSON object.
+`void setRootObject(JObject& object)`: Sets the root object of the parser to the specified JSON object.
 
 #### `setRootArray()`
 
-- `void setRootArray(JArray& array)`: Sets the root array of the parser to the specified JSON array.
+`void setRootArray(JArray& array)`: Sets the root array of the parser to the specified JSON array.
 
-It also provides the following methods to get the current root object or root array:
+At the same time, the following methods are also provided to obtain the current root object or root array:
 
 #### `object()`
 
-- `const JObject& object() const`: Returns the current root object of the parser.
+`const JObject& object() const`: Returns the current root object of the parser.
 
 #### `array()`
 
-- `const JArray& array() const`: Returns the current root array of the parser.
+`const JArray& array() const`: Returns the current root array of the parser.
 
 # Learn More
 
-- [Usage](usage.md)
+- [Usage Guide](usage.md)
 - [Examples](example.md)
 - [Building JsonBuilder with CMake](cmake.md)

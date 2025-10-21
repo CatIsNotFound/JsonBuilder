@@ -5,10 +5,10 @@
 The following example creates a JSON object containing personal information:
 
 ```cpp
-#include <JsonBuilder/Json.h> // Assuming static/dynamic library usage
+#include <JsonBuilder/Json.h> // Assuming using static/dynamic library
 
 int main() {
-    // Create a JSON object for storing personal information
+    // Create a JSON object to store personal information
     Json::JObject person;
     // Add personal information
     person.set("name", "Alice");
@@ -23,14 +23,14 @@ int main() {
     // Add the hobbies array to the object
     person.set("hobbies", hobbies);
 
-    // Convert the Json object to a string
+    // Convert Json object to string
     Json::JParser parser(person);
     std::cout << parser.dump(4) << std::endl;
     return 0;
 }
 ```
 
-Running this program produces the following output:
+Running this program, the output result is as follows:
 
 ```json
 {
@@ -44,9 +44,9 @@ Running this program produces the following output:
 }
 ```
 
-Note: Regarding the order of key-value pairs, the JsonBuilder library defaults to sorting them based on the order they were added in the code, **with the last added key-value pair appearing first**.
+Note: Regarding the order of key-value pairs, the JsonBuilder library sorts them by the order of addition in the code by default, **that is, the last added key-value pair will be at the front**.
 
-You can achieve a more natural ordering by using a `generate → parse → generate again` approach:
+You can use the following code to perform `generate → parse → regenerate` to make the added key-values in order.
 
 ```cpp
 Json::JParser parser(person);
@@ -55,11 +55,11 @@ parser.parse(json);
 std::cout << parser.dump(4) << std::endl;
 ```
 
-## Example 2: Reading a List of Multiple Users
+## Example 2: Reading a List of Multiple Users' Information
 
-Suppose you need to read all user information from a `users.json` file. You can use the JsonBuilder library to accomplish this:
+Suppose you need to read all user information from the `users.json` file, you can use the JsonBuilder library to implement it:
 
-Assume the `users.json` file contains:
+Assuming the content of the `users.json` file is as follows:
 
 ```json
 [
@@ -77,10 +77,10 @@ Assume the `users.json` file contains:
 ```
 
 ```cpp
-#include <JsonBuilder/Json.h> // Assuming static/dynamic library usage
+#include <JsonBuilder/Json.h> // Assuming using static/dynamic library
 
 int main() {
-    // Parse the file through JParser, specifying a maximum line length of 127 characters
+    // Parse the file through JParser and specify the maximum length per line as 127 characters
     Json::JParser parser("users.json", 127);
     // Get the parsed JSON array
     Json::JArray users = parser.array();
@@ -95,7 +95,7 @@ int main() {
 }
 ```
 
-Running this program produces the following output:
+Running this program, the output result is as follows:
 
 ```
 Name: Alice
@@ -107,12 +107,12 @@ Age: 20
 Gender: male
 ```
 
-## Running Examples Using the JsonBuilder Example Program
+## Using JsonBuilder Example Program to Run Examples
 
-For all usage examples provided in the JsonBuilder library, you can view examples for all header files in the `examples` directory under the `examples` directory. You can directly run the examples by using the `JsonBuilderExamples` executable file in the `examples` directory.
+Regarding all usage examples provided in the JsonBuilder library, you can view all header file examples through the `examples` directory under the `examples` directory. You can directly test and run the examples through the `JsonBuilderExamples` executable file under the `examples` directory.
 
 # Learn More
 
 - [Class Reference](class.md)
-- [Usage](usage.md)
+- [Usage Guide](usage.md)
 - [Building JsonBuilder with CMake](cmake.md)

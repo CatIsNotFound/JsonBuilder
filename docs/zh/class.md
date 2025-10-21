@@ -7,7 +7,17 @@ JsonBuilder 库包含以下类：
     - `JArray`：数组类
     - `JValue`：值类
     - `JParser`: JSON 解析器类
+    - `JGet`: 获取 `JValue` 中的数据
     - `JDataType`：数据类型枚举
+        - `Null` - 由`std::monostate`表示
+        - `Bool` - `true`或`false`
+        - `Int` - 32位整数
+        - `BigInt` - 64位整数
+        - `Float` - 32位浮点数
+        - `Double` - 64位浮点数
+        - `String` - UTF-8编码字符串
+        - `Array` - 值的有序集合
+        - `Object` - 键值对的无序集合
     - `JException`：异常命名空间
         - `KeyIsNotFoundException`：键未找到异常（通常出现在对象中访问不存在的键时）
         - `GetBadValueException`：获取错误值异常（通常出现在尝试将一个值转换为不兼容的类型时）
